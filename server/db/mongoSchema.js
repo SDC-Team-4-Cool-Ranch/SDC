@@ -63,5 +63,5 @@ const Reviews = new Schema({
 const ReviewMetaModel = mongoose.model('ReviewMeta', ReviewMeta);
 const ReviewsModel = mongoose.model('Reviews', Reviews);
 
-export db, { ReviewMetaModel, ReviewsModel };
+export default db, { ReviewMetaModel, ReviewsModel };
 
