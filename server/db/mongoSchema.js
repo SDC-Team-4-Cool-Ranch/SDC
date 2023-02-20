@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const db = 'mongodb://localhost/sdc';
 
@@ -63,5 +63,5 @@ const Reviews = new Schema({
 const ReviewMetaModel = mongoose.model('ReviewMeta', ReviewMeta);
 const ReviewsModel = mongoose.model('Reviews', Reviews);
 
-export default db, { ReviewMetaModel, ReviewsModel };
+// module.exports = db;
 

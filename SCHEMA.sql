@@ -1,88 +1,74 @@
--- Globals
+-- Terminal commands for connecting to and creating new database.
+-- psql
+-- DROP DATABASE IF EXISTS sdc
+-- CREATE DATABASE sdc
+-- \c sdc
 
--- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
--- SET FOREIGN_KEY_CHECKS=0;
+-- REVIEWS
+DROP TABLE IF EXISTS "reviews";
 
--- Table 'Reviews'
-DROP TABLE IF EXISTS "Reviews";
-
-CREATE TABLE "Reviews" (
-"id" SERIAL PRIMARY KEY,
-"rating" INTEGER,
-"summary" VARCHAR(255),
-"recommend" BOOLEAN,
-"response" TEXT,
-"body" TEXT,
-"date" DATE,
-"reported" BOOLEAN DEFAULT false,
-"reviewer" VARCHAR(255),
-"email" VARCHAR(255),
-"product_id_meta" INTEGER REFERENCES "meta"("product_id")
+CREATE TABLE reviews (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER NOT NULL,
+  rating INTEGER NOT NULL,
+  date TIMESTAMP NOT NULL,
+  summary TEXT NOT NULL,
+  body TEXT NOT NULL,
+  recommend BOOLEAN NOT NULL,
+  reported BOOLEAN NOT NULL DEFAULT FALSE,
+  reviewer_name TEXT NOT NULL,
+  reviewer_email TEXT NOT NULL,
+  response TEXT DEFAULT NULL,
+  helpfulness INTEGER NOT NULL
 );
 
--- Table 'photos'
+ALTER TABLE reviews ADD CONSTRAINT reviews_product_id_key UNIQUE (product_id); -- allows characteristics to reference the product_id
+CREATE INDEX reviews_product_id_idx ON reviews (product_id);
+CREATE INDEX reviews_reported_idx ON reviews (reported);
+
+
+-- PHOTOS
 DROP TABLE IF EXISTS "photos";
 
-CREATE TABLE "photos" (
-"id" SERIAL PRIMARY KEY,
-"url" VARCHAR(255),
-"id_Reviews" INTEGER REFERENCES "Reviews"("id")
+CREATE TABLE photos (
+  id SERIAL PRIMARY KEY,
+  review_id INTEGER NOT NULL REFERENCES reviews(id),
+  url TEXT NOT NULL
 );
 
--- Table 'meta'
-DROP TABLE IF EXISTS "meta";
 
-CREATE TABLE "meta" (
-"product_id" SERIAL PRIMARY KEY,
-"recommended" INTEGER,
-"not_recommended" INTEGER,
-"1" INTEGER,
-"2" INTEGER,
-"3" INTEGER,
-"4" INTEGER,
-"5" INTEGER,
-"id_characteristics" INTEGER REFERENCES "characteristics"("id")
-);
 
--- Table 'characteristics'
+-- CHARACTERISTICS
 DROP TABLE IF EXISTS "characteristics";
 
 CREATE TABLE "characteristics" (
-"id" SERIAL PRIMARY KEY,
-"size_id" SERIAL UNIQUE,
-"size" INTEGER,
-"width_id" SERIAL UNIQUE,
-"width" INTEGER,
-"comfort_id" SERIAL UNIQUE,
-"comfort" INTEGER,
-"quality_id" SERIAL UNIQUE,
-"quality" INTEGER,
-"length_id" SERIAL UNIQUE,
-"length" INTEGER,
-"fit_id" SERIAL UNIQUE,
-"fit" INTEGER
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER NOT NULL REFERENCES reviews(product_id),
+  name TEXT NOT NULL
 );
 
--- Foreign Keys
 
--- ALTER TABLE "Reviews" ADD FOREIGN KEY (product_id_meta) REFERENCES "meta" ("product_id");
--- ALTER TABLE "photos" ADD FOREIGN KEY (id_Reviews) REFERENCES "Reviews" ("id");
--- ALTER TABLE "meta" ADD FOREIGN KEY (id_characteristics) REFERENCES "characteristics" ("id");
+-- CHARACTERISTIC VALUES
+DROP TABLE IF EXISTS "char_values";
 
--- Table Properties
+CREATE TABLE "char_values" (
+  id SERIAL PRIMARY KEY,
+  characteristic_id INTEGER NOT NULL REFERENCES characteristics(id),
+  review_id INTEGER NOT NULL REFERENCES reviews(id),
+  value INTEGER NOT NULL
+);
 
--- ALTER TABLE "Reviews" OWNER TO "your_username";
--- ALTER TABLE "photos" OWNER TO "your_username";
--- ALTER TABLE "meta" OWNER TO "your_username";
--- ALTER TABLE "characteristics" OWNER TO "your_username";
 
--- Test Data
+-- COPY STATEMENTS TO MIGRATE .NDJSON DATA INTO DATABASE
+COPY reviews (id, product_id, rating, date, summary, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/reviews.csv';
 
--- INSERT INTO "Reviews" ("id","rating","summary","recommend","response","body","date","reported","reviewer","email","product_id_meta") VALUES
--- ('','','','','','','','','','','');
--- INSERT INTO "photos" ("id","url","id_Reviews") VALUES
--- ('','','');
--- INSERT INTO "meta" ("product_id","recommended","not_recommended","1","2","3","4","5","id_characteristics") VALUES
--- ('','','','','','','','','');
--- INSERT INTO "characteristics" ("id","size_id","size","width_id","width","comfort_id","comfort","quality_id","quality","length_id","length","fit_id","fit") VALUES
--- ('','','','','','','','','','','','','');
+COPY photos (id, review_id, url)
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/photos.csv';
+DELIMITER ',' CSV HEADERS
+
+COPY characteristics (id, product_id, name)
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/chars.csv';
+
+COPY char_values (id, characteristic_id, review_id, value)
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/char_data.csv';
