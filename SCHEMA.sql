@@ -11,7 +11,7 @@ CREATE TABLE reviews (
   id SERIAL PRIMARY KEY,
   product_id INTEGER NOT NULL,
   rating INTEGER NOT NULL,
-  date TIMESTAMP NOT NULL,
+  date BIGINT NOT NULL,
   summary TEXT NOT NULL,
   body TEXT NOT NULL,
   recommend BOOLEAN NOT NULL,
@@ -19,12 +19,8 @@ CREATE TABLE reviews (
   reviewer_name TEXT NOT NULL,
   reviewer_email TEXT NOT NULL,
   response TEXT DEFAULT NULL,
-  helpfulness INTEGER NOT NULL
+  helpfulness INTEGER NOT NULL DEFAULT 0
 );
-
-ALTER TABLE reviews ADD CONSTRAINT reviews_product_id_key UNIQUE (product_id); -- allows characteristics to reference the product_id
-CREATE INDEX reviews_product_id_idx ON reviews (product_id);
-CREATE INDEX reviews_reported_idx ON reviews (reported);
 
 
 -- PHOTOS
@@ -43,7 +39,7 @@ DROP TABLE IF EXISTS "characteristics";
 
 CREATE TABLE "characteristics" (
   id SERIAL PRIMARY KEY,
-  product_id INTEGER NOT NULL REFERENCES reviews(product_id),
+  product_id INTEGER NOT NULL,
   name TEXT NOT NULL
 );
 
@@ -59,16 +55,19 @@ CREATE TABLE "char_values" (
 );
 
 
--- COPY STATEMENTS TO MIGRATE .NDJSON DATA INTO DATABASE
-COPY reviews (id, product_id, rating, date, summary, recommend, reported, reviewer_name, reviewer_email, response, helpfulness)
-FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/reviews.csv';
+-- COPY STATEMENTS TO MIGRATE DATA INTO DATABASE
+COPY reviews
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/original/reviews.csv'
+DELIMITER ',' CSV HEADER NULL AS 'null';
 
 COPY photos (id, review_id, url)
-FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/photos.csv';
-DELIMITER ',' CSV HEADERS
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/original/photos.csv'
+DELIMITER ',' CSV HEADER NULL AS 'null';
 
 COPY characteristics (id, product_id, name)
-FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/chars.csv';
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/original/chars.csv'
+DELIMITER ',' CSV HEADER NULL AS 'null';
 
 COPY char_values (id, characteristic_id, review_id, value)
-FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/cleaned/char_data.csv';
+FROM '/Users/jerrodvarney/HackReactor/sdc/reviews_jerrod/data/original/char_data.csv'
+DELIMITER ',' CSV HEADER NULL AS 'null';

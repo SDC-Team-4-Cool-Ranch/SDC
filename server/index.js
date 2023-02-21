@@ -1,11 +1,23 @@
 const express = require('express');
+const morgan = require('morgan');
+const router = require('./routes');
 const app = express();
-const db = require('./db/mongoSchema.js');
+
+
+// MIDDLEWARE
+app.use(morgan('dev'));
+app.use(express.json());
+
+
+// HTTP ROUTER
+app.use('/api', router)
 
 
 
-
-const port = 3000;
+const PORT = 3000;
 
 // STARTS THE SERVER
-app.listen(port, () => console.log(`server listening on port ${port}`));
+app.listen(PORT, function(err) {
+  if (err) console.log('error starting server: ', err);
+  else console.log(`server listening on port ${PORT}`);
+});
