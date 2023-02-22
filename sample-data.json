@@ -83,7 +83,7 @@
             "photos": []
         }
     ]
-}
+},
 
 // '/reviews/meta'
 {
@@ -117,4 +117,21 @@
           "value": "3.3541666666666667"
       }
   }
+},
+
+{
+    "product_id": 1,
+    "rating": 3,
+    "summary": "testing testing testing.",
+    "body": "testing testing testing",
+    "recommend": true,
+    "name": "jrod",
+    "email": "testyboi@gmail.com",
+    "photos": ["http://testphotourl.com"],
+    "characteristics": {
+        "1": 3,
+        "2": 3,
+        "3": 2,
+        "4": 5
+    }
 }

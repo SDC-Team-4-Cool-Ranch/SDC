@@ -8,7 +8,7 @@ const controllers = {
     }
 
     db.fetchReviews(req.query)
-      .then(reviews => res.status(200).send(JSON.stringify(reviews)))
+      .then(reviews => res.status(200).send(reviews))
       .catch(err => {
         console.error('error fetching reviews: ', err);
         res.sendStatus(500);
@@ -22,7 +22,7 @@ const controllers = {
     }
 
     db.fetchMeta(req.query.product_id)
-      .then(meta => res.status(200).send(JSON.stringify(meta)))
+      .then(meta => res.status(200).send(meta))
       .catch(err => {
         console.error('error fetching meta: ', err);
         res.sendStatus(500);

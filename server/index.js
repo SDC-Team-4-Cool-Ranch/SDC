@@ -1,8 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const router = require('./routes');
-const app = express();
+// const path = require('path');
 
+const { LOCAL_URL, PORT } = process.env;
+const app = express();
 
 // MIDDLEWARE
 app.use(morgan('dev'));
@@ -13,11 +16,8 @@ app.use(express.json());
 app.use('/api', router)
 
 
-
-const PORT = 3000;
-
 // STARTS THE SERVER
 app.listen(PORT, function(err) {
   if (err) console.log('error starting server: ', err);
-  else console.log(`server listening on port ${PORT}`);
+  else console.log(`server listening at ${LOCAL_URL}:${PORT}`);
 });
