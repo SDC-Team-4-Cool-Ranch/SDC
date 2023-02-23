@@ -30,6 +30,7 @@ const controllers = {
   },
 
   addReview: (req, res) => {
+    // future enhancement: validate review data
     if (!req.body.product_id) {
       res.sendStatus(400);
       return;
