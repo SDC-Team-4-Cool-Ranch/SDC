@@ -1,19 +1,5 @@
-//CREATE DATABASE CONNECTION
-const { Pool } = require('pg');
-const conn = new Pool({
-  user: 'jerrodvarney',
-  host: 'localhost',
-  database: 'sdc',
-  password: '',
-  port: 5432
-});
-conn.connect((err) => {
-  if (err) console.error('error connecting to database: ', err);
-  else console.log('connected to database');
-});
+const conn = require('../db/config.js');
 
-
-// MODELS
 module.exports = {
   fetchReviews: async ({ product_id, page = 1, count = 5, sort = 'newest' }) => {
     // doesnt sort or get correct page/count
