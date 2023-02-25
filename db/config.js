@@ -10,8 +10,8 @@ const conn = new Pool({
 });
 
 conn.connect((err) => {
-  if (err) console.error('error connecting to database: ', err);
-  else console.log('connected to database');
+  if (err) console.error(`error connecting to database '${process.env.DB}': `, err);
+  else console.log(`connected to database '${process.env.DB}'`);
 });
 
 module.exports = conn;

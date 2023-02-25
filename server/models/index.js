@@ -1,4 +1,4 @@
-const conn = require('../db/config.js');
+const conn = require('../../db/config.js');
 
 module.exports = {
   fetchReviews: async ({ product_id, page = 1, count = 5, sort = 'newest' }) => {
