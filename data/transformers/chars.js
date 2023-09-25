@@ -25,8 +25,6 @@ const transformOneChar = (char) => {
   char.name = char.name[0].toUpperCase() + char.name.slice(1);
 
   let csv = Papa.unparse([char], { dynamicTyping: true, header: false });
-  // console.log(csv);
-  // csv = `${JSON.stringify(csv)}\n`
   return csv;
 };
 
